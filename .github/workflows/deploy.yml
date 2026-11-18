@@ -1,0 +1,39 @@
+name: nebula-server-ci
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMG: ghcr.io/navarro-afk/nebula-server
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Pruebas
+        working-directory: server
+        run: pip install -r requirements.txt pytest && pytest -q
+
+      - name: Login a GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y publicar imagen
+        working-directory: server
+        run: |
+          docker build -t $IMG:${{ github.sha }} .
+          docker push $IMG:${{ github.sha }}
