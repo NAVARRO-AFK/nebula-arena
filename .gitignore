@@ -1,3 +1,15 @@
 .venv/
 __pycache__/
 .pytest_cache/
+# Certificados y llaves (no subir)
+loadtest/client.key
+loadtest/client.crt
+loadtest/ca.crt
+# Estado de Terraform (puede contener secretos)
+infra/*.tfstate
+infra/*.tfstate.backup
+infra/.terraform/
+infra/plan.tfplan
+# Resultados de pruebas
+loadtest/*.csv
+loadtest/*.png
