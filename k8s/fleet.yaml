@@ -1,0 +1,27 @@
+apiVersion: agones.dev/v1
+kind: Fleet
+metadata:
+  name: nebula-fleet
+spec:
+  replicas: 3
+  template:
+    spec:
+      ports:
+      - name: game
+        containerPort: 7654
+        protocol: TCP
+      health:
+        initialDelaySeconds: 10
+        periodSeconds: 5
+      template:
+        spec:
+          containers:
+          - name: nebula
+            image: nebula-server:1.0
+            imagePullPolicy: IfNotPresent
+            ports:
+            - name: metrics
+              containerPort: 9100
+            resources:
+              requests: { cpu: "250m", memory: "256Mi" }
+              limits: { cpu: "500m", memory: "512Mi" }
